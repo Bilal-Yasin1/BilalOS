@@ -1,46 +1,49 @@
 #include <iostream>
+#include <limits>
+#include <string>
 
-#include "D:\BilalOS\include\UserManager.h"
+#include "../include/UserManager.h"
+#include "../include/Shell.h"
 
 int main()
 {
     UserManager manager;
-
     manager.loadUsers();
-
-    int choice;
 
     while (true)
     {
-        std::cout
-            << "1. Register\n"
-            << "2. Login\n"
-            << "3. Exit\n";
+        std::cout << "\n=========================\n";
+        std::cout << "      BilalOS v0.1\n";
+        std::cout << "=========================\n";
+        std::cout << "1. Register\n";
+        std::cout << "2. Login\n";
+        std::cout << "3. Exit\n";
+        std::cout << "Enter your choice: ";
 
+        int choice;
         std::cin >> choice;
+
+        // Clear the newline left by std::cin
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (choice == 1)
         {
             std::string username;
             std::string password;
 
-            std::cout << "Username: ";
-            std::cin >> username;
+            std::cout << "Enter username: ";
+            std::getline(std::cin, username);
 
-            std::cout << "Password: ";
-            std::cin >> password;
+            std::cout << "Enter password: ";
+            std::getline(std::cin, password);
 
-            if (manager.registerUser(
-                    username,
-                    password))
+            if (manager.registerUser(username, password))
             {
-                std::cout
-                    << "Registration successful\n";
+                std::cout << "User registered successfully.\n";
             }
             else
             {
-                std::cout
-                    << "Username already exists\n";
+                std::cout << "Username already exists.\n";
             }
         }
         else if (choice == 2)
@@ -48,28 +51,39 @@ int main()
             std::string username;
             std::string password;
 
-            std::cout << "Username: ";
-            std::cin >> username;
+            std::cout << "Enter username: ";
+            std::getline(std::cin, username);
 
-            std::cout << "Password: ";
-            std::cin >> password;
+            std::cout << "Enter password: ";
+            std::getline(std::cin, password);
 
-            if (manager.loginUser(
-                    username,
-                    password))
+            if (manager.loginUser(username, password))
             {
-                std::cout
-                    << "Login successful\n";
+                std::cout << "\nLogin successful. Welcome, "
+                          << username << "!\n\n";
+
+                Shell shell(username);
+
+                bool shouldExit = shell.start();
+
+                if (shouldExit)
+                {
+                    break;
+                }
             }
             else
             {
-                std::cout
-                    << "Invalid credentials\n";
+                std::cout << "Invalid username or password.\n";
             }
+        }
+        else if (choice == 3)
+        {
+            std::cout << "Exiting BilalOS...\n";
+            break;
         }
         else
         {
-            break;
+            std::cout << "Invalid choice. Please try again.\n";
         }
     }
 
